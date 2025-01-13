@@ -18,7 +18,8 @@
       <div v-else>
         <p class="empty-cart">Your cart is empty</p>
       </div>
-      <button></button>
+      <button @click="removeFromCart(movie.id)" class="checkout-button">Checkout</button>
+
     </div>
     <Footer />
 

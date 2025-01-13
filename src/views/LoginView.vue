@@ -2,7 +2,33 @@
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import logo from '@/assets/blacklogo.jpg';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase"
 
+const store = useStore();
+const email = ref('');
+
+
+const loginByEmail = async () => {
+  try {
+    const user = (await signInWithEmailAndPassword(auth, email.value, password.value)).user;
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    console.log(error);
+    alert("There was an error signing in with email!");
+  }
+};
+
+const loginByGoogle = async () => {
+  try {
+    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error signing in with Google!");
+  }
+};
 const router = useRouter();
 const password = ref('');
 

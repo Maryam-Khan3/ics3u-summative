@@ -64,6 +64,9 @@
   
     alert('Settings updated!');
   };
+
+
+
   </script>
   
   <style scoped>

@@ -4,6 +4,8 @@ import logo from '@/assets/blacklogo.jpg';
 import { ref } from 'vue';
 import { useUserStore } from '@/stores';
 import { useRouter } from 'vue-router'; 
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase";
 
 
 const firstName = ref('');
@@ -12,6 +14,28 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
+const store = useStore();
+
+async function registerByEmail() {
+  try {
+    const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+    await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error creating a user with email!");
+  }
+}
+
+async function registerByGoogle() {
+  try {
+    const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+    store.user = user;
+    router.push("/movies/all");
+  } catch (error) {
+    alert("There was an error creating a user with Google!");
+  }
+}
 
 const userStore = useUserStore();
 
