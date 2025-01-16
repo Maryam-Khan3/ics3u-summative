@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
-import { useUserStore } from '@/stores'; // Import user store to check authentication
+import { useUserStore } from '@/stores'; 
 import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import LoginView from '../views/LoginView.vue';

@@ -14,7 +14,7 @@
       </div>
 
       <div class="form-group">
-        <label for="lastName">Last Name:</label>
+     <label for="lastName">Last Name:</label>
         <input
           v-model="lastName"
           type="text"

@@ -28,8 +28,8 @@
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import axios from 'axios';
-  import Footer from '../../../ics3u/src/components/Footer.vue';
-  import Header from '../../../ics3u/src/components/Header.vue';
+  import Footer from '../components/Footer.vue';
+  import Header from '../components/Header.vue';
   
   const route = useRoute();
   const movie = ref(null); 

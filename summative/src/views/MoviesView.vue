@@ -35,11 +35,11 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import axios from 'axios';
-  import Genres from '../../../ics3u/src/components/Genres.vue';
+  import Genres from '../components/Genres.vue';
   import { useRouter } from 'vue-router';
-  import Footer from '../../../ics3u/src/components/Footer.vue';
-  import Header from '../../../ics3u/src/components/Header.vue';
-  import { useUserStore, useMainStore } from '../../../ics3u/src/stores';
+  import Footer from '../components/Footer.vue';
+  import Header from '../components/Header.vue';
+  import { useUserStore, useMainStore } from '../stores';
   
   const userStore = useUserStore(); 
   const mainStore = useMainStore();

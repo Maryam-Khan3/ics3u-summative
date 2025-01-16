@@ -13,7 +13,6 @@ const confirmPassword = ref('');
 const userStore = useUserStore();
 const router = useRouter();
 
-// Register with Email and Password
 async function registerByEmail() {
   if (!firstName.value || !lastName.value || !email.value || !password.value || !confirmPassword.value) {
     alert("All fields are required.");
@@ -25,25 +24,23 @@ async function registerByEmail() {
   }
 
   try {
-    // Attempt to create a new user
+
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
 
-    // Update user profile with first and last name
     await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
 
-    // Store user in Pinia store
+    
     userStore.setUserInfo({
       firstName: firstName.value,
       lastName: lastName.value,
       email: user.email,
     });
 
-    // Redirect to /movies
     router.push("/movies");
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
-      console.error("Email registration error: ", error.message); // Optional for debugging
+      console.error("Email registration error: ", error.message); 
       alert("This email is already registered. Please login or use a different email.");
     } else {
       alert(`Error: ${error.message}`);
@@ -51,21 +48,20 @@ async function registerByEmail() {
   }
 }
 
-// Register with Google
 async function registerByGoogle() {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Store user in Pinia store
+
     userStore.setUserInfo({
       firstName: user.displayName?.split(' ')[0] || '',
       lastName: user.displayName?.split(' ')[1] || '',
       email: user.email,
     });
 
-    // Redirect to /movies
+
     router.push("/movies");
   } catch (error) {
     alert(`Google Sign-Up Error: ${error.message}`);
@@ -104,7 +100,7 @@ async function registerByGoogle() {
 </template>
 
 <style scoped>
-/* Same styling as before */
+
 .hero {
   background-color: black;
   height: 100vh;

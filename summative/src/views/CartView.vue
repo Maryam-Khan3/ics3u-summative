@@ -1,57 +1,20 @@
+<script setup>
+import { useMainStore } from '@/stores';
+const store = useStore();
+</script>
+
 <template>
-
-  <div class="cart-container">
-    <h1>Your Cart</h1>
-
-    <div v-if="cartItems.length" class="cart-items">
-      <div v-for="movie in cartItems" :key="movie.id" class="cart-item">
-        <!-- Movie Poster -->
-        <img
-          :src="movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/path/to/fallback-image.jpg'"
-          alt="Movie Poster"
-          class="movie-poster"
-        />
-        <p class="cart-title">{{ movie.title }}</p>
-        <button @click="removeFromCart(movie.id)" class="remove-button">Remove</button>
-      </div>
+    <div class="cart">
+        <h1>Shopping Cart</h1>
+        <div class="item" v-for="([key, value]) in store.cart">
+            <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
+            <h1>{{ value.title }}</h1>
+            <button @click="store.cart.delete(key)">Remove</button>
+        </div>
     </div>
-
-    <div v-else>
-      <p class="empty-cart">Your cart is empty</p>
-    </div>
-    <button @click="checkout" class="checkout-button" :disabled="!cartItems.length">
-      Checkout
-    </button>
-  </div>
-  <Footer />
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useMainStore } from '@/stores';
-import axios from 'axios';
-import Footer from "../components/Footer.vue";
 
-// Using the main store to manage the cart
-const store = useMainStore();
-const cartItems = computed(() => store.cartItems);  // Using the store's computed cartItems
-
-// Remove item from cart
-
-
-function removeFromCart(movieId) {
-  console.log('Removing movie with ID:', movieId);
-  store.removeFromCart(movieId);
-}
-console.log(cartItems.value);
-// Handle Checkout
-function checkout() {
-  store.clearCart();  // Clear the cart in the store
-  localStorage.removeItem('cart');  // Remove from localStorage
-  // You might want to show a confirmation message or redirect the user
-  alert("Thank you for your purchase!");
-}
-</script>
 
 <style scoped>
   body {

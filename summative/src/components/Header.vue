@@ -1,13 +1,12 @@
 <template>
   <div class="header">
     <div class="navbar">
-      <!-- If the user is not logged in -->
+
       <div class="nav-buttons" v-if="!isUserLoggedIn">
         <RouterLink to="/login" class="button">Sign in</RouterLink>
         <RouterLink to="/register" class="button">Create an Account</RouterLink>
       </div>
 
-      <!-- If the user is logged in -->
       <div class="top-buttons" v-if="isUserLoggedIn">
         <button @click="logout" class="button logout-button">Logout</button>
         <button @click="goToSettings" class="button settings-button">Settings</button>
@@ -21,41 +20,40 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useUserStore } from '@/stores'; // Adjust to your file structure
+import { useUserStore } from '@/stores'; 
 import { useRouter } from 'vue-router';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/firebase'; // Assuming Firebase is initialized
+import { auth } from '@/firebase'; 
 
 const userStore = useUserStore();
 const router = useRouter();
 
 const isUserLoggedIn = computed(() => {
-  return userStore.user !== null; // Check if user exists
+  return userStore.user !== null; 
 });
 
-// Logout method
+
 async function logout() {
   try {
-    await signOut(auth); // Sign out from Firebase
-    userStore.clearUserInfo(); // Clear user data in the store
-    router.push('/login'); // Redirect to login page
+    await signOut(auth); 
+    userStore.clearUserInfo(); 
+    router.push('/login'); 
   } catch (error) {
     console.error('Error signing out:', error);
   }
 }
 
-// Navigate to settings
 function goToSettings() {
   router.push('/settings');
 }
 
-// Navigate to cart
+
 function goToCart() {
   if (isUserLoggedIn.value) {
     router.push('/cart');
   } else {
     console.warn("User not logged in, redirecting to login.");
-    router.push('/login'); // Optionally redirect to login if not logged in
+    router.push('/login'); 
   }
 }
 </script>

@@ -55,10 +55,10 @@ body {
 }
 .movies-container {
   background-color: black;
-  padding: 20px;
+  padding: 15px;
   display: grid; 
   grid-template-columns: repeat(4, 1fr); 
-  gap: 20px; 
+  gap: 1px; 
   justify-content: center; 
 }
 
