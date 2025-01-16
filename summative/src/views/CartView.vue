@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useMainStore } from '@/stores';
+import { useMainStore } from '../../../ics3u/src/stores';
 import axios from 'axios';
 import Footer from "../components/Footer.vue";
 

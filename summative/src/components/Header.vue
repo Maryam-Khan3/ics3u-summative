@@ -20,7 +20,7 @@
   
   <script setup>
   import { computed } from 'vue';
-  import { useUserStore } from '@/stores'; 
+  import { useUserStore } from '../../../ics3u/src/stores'; 
   import { useRouter } from 'vue-router';
   import logo from '@/assets/blacklogo.jpg';
   

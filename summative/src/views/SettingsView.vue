@@ -41,7 +41,7 @@
   
   <script setup>
   import { ref } from 'vue';
-  import { useUserStore } from '@/stores';  
+  import { useUserStore } from '../stores';  
   
   
   const userStore = useUserStore();
