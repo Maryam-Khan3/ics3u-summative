@@ -10,40 +10,39 @@ const password = ref('');
 const userStore = useUserStore();
 const router = useRouter();
 
-// Function to add delay (for synchronization)
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Email/Password Login
+
 async function loginByEmail() {
   try {
-    // Check if email is registered
+
     const signInMethods = await fetchSignInMethodsForEmail(auth, email.value);
     if (signInMethods.length === 0) {
       alert("No account found with this email. Please register first.");
-      router.push("/register"); // Redirect to registration page
+      router.push("/register"); 
       return;
     }
 
-    // Proceed to sign in if email is registered
+   
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
 
-    // Store user details in Pinia store
     userStore.setUserInfo({
       firstName: user.displayName?.split(' ')[0] || '',
       lastName: user.displayName?.split(' ')[1] || '',
       email: user.email,
     });
 
-    // Redirect to /movies
+    
     router.push("/movies");
   } catch (error) {
     if (error.code === "auth/user-not-found") {
-      // If user is not found, maybe they just registered, so recheck after a delay
-      await delay(1000); // Wait for 1 second before retrying
-      loginByEmail(); // Reattempt login
+     
+      await delay(1000); 
+      loginByEmail(); 
     } else if (error.code === "auth/wrong-password") {
       alert("Incorrect password. Please try again.");
     } else {
@@ -52,21 +51,21 @@ async function loginByEmail() {
   }
 }
 
-// Google Login
+
 async function loginByGoogle() {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Store user details in Pinia store
+
     userStore.setUserInfo({
       firstName: user.displayName?.split(' ')[0] || '',
       lastName: user.displayName?.split(' ')[1] || '',
       email: user.email,
     });
 
-    // Redirect to /movies
+   
     router.push("/movies");
   } catch (error) {
     alert(`Google Sign-In Error: ${error.message}`);
@@ -101,7 +100,7 @@ async function loginByGoogle() {
 </template>
 
 <style scoped>
-/* Same styling as before */
+
 .hero {
   background-color: black;
   height: 100vh;
