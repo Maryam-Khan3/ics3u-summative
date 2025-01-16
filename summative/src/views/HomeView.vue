@@ -1,17 +1,15 @@
 <script setup>
-import Header from '../../../ics3u/src/components/Header.vue';
+import Header from '@/components/Header.vue';
+import Hero from '@/components/Hero.vue';
+import NowPlayingMovies from '@/components/Feature.vue';  
+import Footer from '@/components/Footer.vue';
 const heroText = "Stream Our Movies,<br/>Whenever, Wherever";
-import Hero from '../../../ics3u/src/components/Hero.vue';
-import NowPlayingMovies from '../../../ics3u/src/components/Feature.vue';  
-import Footer from '../../../ics3u/src/components/Footer.vue';
 </script>
 
 <template>
   <div>
     <div class="hero">
-
-      <Header :text="headerText" />
-
+      <Header />
       <Hero :text="heroText" />
       
       <div class="overlay">
