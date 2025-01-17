@@ -1,97 +1,131 @@
-<script setup>
-import { useMainStore } from '@/stores';
-const store = useStore();
-</script>
-
 <template>
-    <div class="cart">
-        <h1>Shopping Cart</h1>
-        <div class="item" v-for="([key, value]) in store.cart">
-            <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
-            <h1>{{ value.title }}</h1>
-            <button @click="store.cart.delete(key)">Remove</button>
-        </div>
+  <Header />
+  <div class="cart-container">
+    <h1>Your Cart</h1>
+
+    <div class="cart-items" v-if="cartItems.length">
+      <div v-for="([id, movie]) in cartItems" :key="id" class="cart-item">
+        <img 
+          :src="movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/120x180'" 
+          alt="Movie Poster" 
+          class="movie-poster" 
+        />
+        <p class="cart-title">{{ movie.title }}</p>
+        <button @click="removeFromCart(id)" class="remove-button">Remove</button>
+      </div>
     </div>
+
+    <div v-else>
+      <p class="empty-cart">Your cart is empty</p>
+    </div>
+
+    <div v-if="cartItems.length">
+      <button @click="checkout" class="checkout-button">Checkout</button>
+    </div>
+    <div v-if="isCheckoutComplete">
+      <p class="thank-you-message">Thank you for your purchase!</p>
+    </div>
+  </div>
+  <img :src="logo" class="logo-container" width="160" height="160" alt="Black Logo" />
+  <Footer />
+
 </template>
 
+<script setup>
+import { useStore } from '@/stores';
+import { computed, ref } from 'vue';
+import logo from '@/assets/blacklogo.jpg';
+
+
+const store = useStore();
+const isCheckoutComplete = ref(false);
+
+const cartItems = computed(() => Array.from(store.cart.entries()));
+
+const removeFromCart = (id) => {
+  store.removeFromCart(id);
+};
+
+const checkout = () => {
+  if (store.checkout()) { 
+    isCheckoutComplete.value = true; 
+  }
+};
+</script>
 
 
 <style scoped>
-  body {
-    background-color: black;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.cart-container {
+  padding: 20px;
+  text-align: center;
+}
 
-  .cart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-height: 100vh;
-    color: white;
-  }
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
 
-  .cart-items {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 800px;
-  }
+.movie-poster {
+  width: 120px;
+  height: 180px;
+  border-radius: 8px;
+}
 
-  .cart-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #333;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
-  }
+.cart-title {
+  flex-grow: 1;
+  color: white;
+  font-size: 1.2rem;
+}
 
-  .cart-item:hover {
-    transform: scale(1.05);
-  }
+.remove-button {
+  background-color: #571295;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-  .movie-poster {
-    width: 120px;
-    height: 180px;
-    border-radius: 8px;
-  }
+.remove-button:hover {
+  background-color: rgb(47, 56, 120);
+}
 
-  .cart-title {
-    flex-grow: 1;
-    font-size: 1.2rem;
-    margin-left: 15px;
-    color: white;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.empty-cart {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: gray;
+}
 
-  .remove-button {
-    background-color: #571295;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.checkout-button {
+  background-color: #571295;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
 
-  .remove-button:hover {
-    background-color: rgb(47, 56, 120);
-  }
+.checkout-button:hover {
+  background-color: rgb(47, 56, 120);
+}
 
-  .empty-cart {
-    font-size: 2.1rem;
-    color: black;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  }
+.thank-you-message {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: green;
+}
 </style>

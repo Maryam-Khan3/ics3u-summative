@@ -1,77 +1,94 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import { auth } from '@/firebase'; 
+import { ref, watchEffect, onMounted } from "vue";
+import { defineStore } from "pinia";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
+export const useStore = defineStore('store', () => {
+  const user = ref(null);
+  const cart = ref(new Map());
 
-export const useUserStore = defineStore('userStore', () => {
-  const user = ref(null); 
+  function saveCartToLocalStorage() {
+    if (user.value && user.value.email) {
+      localStorage.setItem(`cart_${user.value.email}`, JSON.stringify(Object.fromEntries(cart.value)));
+    }
+  }
 
+  function loadCartFromLocalStorage() {
+    if (user.value && user.value.email) {
+      const storedCart = localStorage.getItem(`cart_${user.value.email}`);
+      if (storedCart) {
+        cart.value = new Map(Object.entries(JSON.parse(storedCart)));
+      }
+    }
+  }
 
-  const setUserInfo = (firebaseUser) => {
-    user.value = firebaseUser;
-  };
+  function saveUserToLocalStorage() {
+    if (user.value) {
+      localStorage.setItem('user', JSON.stringify(user.value));
+    }
+  }
 
- 
-  const clearUserInfo = () => {
-    user.value = null;
-  };
+  function loadUserFromLocalStorage() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      user.value = JSON.parse(storedUser);
+    }
+  }
 
-  const fullName = computed(() => {
-    return user.value?.displayName || '';
+  function addToCart(movieId, movieData) {
+    cart.value.set(movieId, movieData);
+    saveCartToLocalStorage();
+  }
+
+  function removeFromCart(movieId) {
+    cart.value.delete(movieId);
+    saveCartToLocalStorage();
+  }
+
+  function checkout() {
+    if (cart.value.size === 0) {
+      console.error("Cart is empty. Cannot proceed with checkout.");
+      return false;
+    }
+
+    console.log("Checking out with items:", Array.from(cart.value.entries()));
+
+    cart.value.clear();
+    saveCartToLocalStorage();
+    return true;
+  }
+
+  onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      user.value = firebaseUser;
+      saveUserToLocalStorage();
+      loadCartFromLocalStorage();
+    } else {
+      user.value = null;
+      cart.value = new Map();
+      localStorage.removeItem('user');
+    }
   });
 
- 
-  const syncUserFromFirebase = () => {
-    auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        setUserInfo(firebaseUser); 
-      }
-    });
-  };
+  onMounted(() => {
+    loadUserFromLocalStorage();
+    loadCartFromLocalStorage();
+  });
+
+  watchEffect(() => {
+    if (user.value) {
+      saveUserToLocalStorage();
+      saveCartToLocalStorage();
+    }
+  });
 
   return {
     user,
-    setUserInfo,
-    clearUserInfo,
-    fullName,
-    syncUserFromFirebase,
-  };
-});
-
-
-export const useMainStore = defineStore('mainStore', () => {
-  const cart = ref(new Map(JSON.parse(localStorage.getItem('cart') || '[]'))); 
-
-  const saveCartToLocalStorage = () => {
-    localStorage.setItem('cart', JSON.stringify(Array.from(cart.value.entries())));
-  };
-
- 
-  const addToCart = (id, movieData) => {
-    cart.value.set(id, movieData);
-    saveCartToLocalStorage(); 
-  };
-
-
-  const removeFromCart = (id) => {
-    cart.value.delete(id);
-    saveCartToLocalStorage(); 
-  };
-
-  const clearCart = () => {
-    cart.value.clear();
-    saveCartToLocalStorage(); 
-  };
-
-  const cartItems = computed(() => {
-    return Array.from(cart.value.values());  
-  });
-
-  return {
     cart,
     addToCart,
     removeFromCart,
-    clearCart,
-    cartItems,
+    checkout, 
+    saveCartToLocalStorage,
+    loadCartFromLocalStorage,
   };
 });

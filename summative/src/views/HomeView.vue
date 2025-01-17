@@ -11,21 +11,11 @@ const heroText = "Stream Our Movies,<br/>Whenever, Wherever";
     <div class="hero">
       <Header />
       <Hero :text="heroText" />
-      
-      <div class="overlay">
-        <div class="hero-content">
-        </div>
-      </div>
     </div>
-
     <div class="movies-container">
       <NowPlayingMovies />
     </div>
-    
-  </div>
-  <div class="footer-container">
     <Footer />
-
   </div>
 </template>
 

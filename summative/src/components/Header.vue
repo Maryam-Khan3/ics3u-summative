@@ -1,7 +1,6 @@
 <template>
   <div class="header">
     <div class="navbar">
-
       <div class="nav-buttons" v-if="!isUserLoggedIn">
         <RouterLink to="/login" class="button">Sign in</RouterLink>
         <RouterLink to="/register" class="button">Create an Account</RouterLink>
@@ -13,30 +12,28 @@
         <button @click="goToCart" class="button cart-button">Go to Cart</button>
       </div>
     </div>
-
     <img :src="logo" class="logo-container" width="160" height="160" alt="Black Logo" />
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { useUserStore } from '@/stores'; 
+import { useStore } from '@/stores'; 
 import { useRouter } from 'vue-router';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase'; 
+import logo from '@/assets/blacklogo.jpg';
 
-const userStore = useUserStore();
+const store = useStore();
 const router = useRouter();
 
-const isUserLoggedIn = computed(() => {
-  return userStore.user !== null; 
-});
-
+const isUserLoggedIn = computed(() => store.user !== null);
 
 async function logout() {
   try {
-    await signOut(auth); 
-    userStore.clearUserInfo(); 
+    await signOut(auth);
+    store.user = null; 
+    localStorage.removeItem(`cart_${store.user?.email}`); 
     router.push('/login'); 
   } catch (error) {
     console.error('Error signing out:', error);
@@ -47,17 +44,14 @@ function goToSettings() {
   router.push('/settings');
 }
 
-
 function goToCart() {
   if (isUserLoggedIn.value) {
     router.push('/cart');
   } else {
-    console.warn("User not logged in, redirecting to login.");
-    router.push('/login'); 
+    router.push('/login');
   }
 }
 </script>
-
 
 <style scoped>
 .logo-container {

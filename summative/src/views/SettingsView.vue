@@ -10,16 +10,18 @@
           type="text"
           id="firstName"
           class="input-field"
+          :disabled="isGoogleUser" 
         />
       </div>
 
       <div class="form-group">
-     <label for="lastName">Last Name:</label>
+        <label for="lastName">Last Name:</label>
         <input
           v-model="lastName"
           type="text"
           id="lastName"
           class="input-field"
+          :disabled="isGoogleUser" 
         />
       </div>
 
@@ -30,47 +32,76 @@
           type="email"
           id="email"
           class="input-field"
-          disabled
+          disabled 
         />
       </div>
 
-      <button type="submit" class="button save">Save Changes</button>
+      <div class="form-group" v-if="!isGoogleUser">
+        <label for="password">Password:</label>
+        <input
+          v-model="password"
+          type="password"
+          id="password"
+          class="input-field"
+          placeholder="Enter new password"
+        />
+      </div>
+
+
+      <button type="submit" class="button save" :disabled="isGoogleUser">Save Changes</button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useUserStore } from '@/stores';  
+import { ref, computed, onMounted } from 'vue';
+import { useStore } from '@/stores'; 
+
+const store = useStore(); 
+
+const firstName = ref('');
+const lastName = ref('');
+const email = ref('');
+const password = ref('');
+
+const isGoogleUser = computed(() => {
+  return store.user?.providerData?.some(provider => provider.providerId === 'google.com');
+});
+
+onMounted(() => {
+  if (store.user) {
+    firstName.value = store.user.firstName || '';
+    lastName.value = store.user.lastName || '';
+    email.value = store.user.email || '';
+  }
+});
 
 
-const userStore = useUserStore();
-
-
-const firstName = ref(userStore.user.firstName);
-const lastName = ref(userStore.user.lastName);
-const email = ref(userStore.user.email);
-
-
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
- 
-  userStore.setUserInfo({
-    firstName: firstName.value,
-    lastName: lastName.value,
-    email: email.value,
-  });
+  if (!isGoogleUser.value) {
+    if (password.value) {
+      try {
+        await store.updateUserPassword(password.value);
+        alert('Password updated successfully!');
+      } catch (error) {
+        console.error('Failed to update password:', error);
+        alert('Failed to update password.');
+      }
+    }
 
-  alert('Settings updated!');
+    await store.updateUserProfile(firstName.value, lastName.value);
+
+    alert('Settings updated!');
+  } else {
+    alert('You cannot edit your details as you signed in with Google.');
+  }
 };
-
-
-
 </script>
 
-<style scoped>
 
+<style scoped>
 body {
   background-color: black;
   color: white;
@@ -82,17 +113,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; 
+  height: 100vh;
   flex-direction: column;
   padding: 20px;
 }
 
 h1 {
-  color:black;
+  color: black;
   font-size: 2rem;
   margin-bottom: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 .form {
@@ -117,7 +147,6 @@ h1 {
   background-color: #333;
   color: white;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-color:white;
 }
 
 button.save {
@@ -130,14 +159,14 @@ button.save {
   width: 100%;
   margin-top: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 button.save:hover {
   background-color: #5e1eaf;
 }
-label{
+
+label {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  color:white;
+  color: white;
 }
 </style>

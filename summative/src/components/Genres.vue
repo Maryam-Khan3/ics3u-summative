@@ -24,7 +24,9 @@
     const newGenre = event.target.value;
     emit('update-genre', newGenre); 
   }
-  </script><style scoped>
+  </script>
+  
+  <style scoped>
 .movie-gallery {
   display: flex;
   flex-direction: column;

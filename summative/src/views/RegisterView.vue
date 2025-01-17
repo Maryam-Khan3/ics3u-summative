@@ -1,76 +1,54 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider, getAuth } from "firebase/auth";
-import { auth } from "../firebase";
-import { useUserStore } from '../stores';
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useStore } from '../stores'; 
 
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const userStore = useUserStore();
+const store = useStore(); 
 const router = useRouter();
 
-async function registerByEmail() {
-  if (!firstName.value || !lastName.value || !email.value || !password.value || !confirmPassword.value) {
-    alert("All fields are required.");
-    return;
-  }
+const registerByEmail = async () => {
   if (password.value !== confirmPassword.value) {
-    alert("Passwords do not match.");
+    alert('Passwords do not match');
     return;
   }
 
   try {
-
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
 
-    await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
-
-    
-    userStore.setUserInfo({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: user.email,
+    await updateProfile(user, {
+      displayName: `${firstName.value} ${lastName.value}`,
     });
 
-    router.push("/movies");
+  
+    store.user = user;
+    router.push('/movies'); 
   } catch (error) {
-    if (error.code === "auth/email-already-in-use") {
-      console.error("Email registration error: ", error.message); 
-      alert("This email is already registered. Please login or use a different email.");
-    } else {
-      alert(`Error: ${error.message}`);
-    }
+    alert(error.message);
   }
-}
+};
 
-async function registerByGoogle() {
+const registerByGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  
   try {
-    const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-
-    userStore.setUserInfo({
-      firstName: user.displayName?.split(' ')[0] || '',
-      lastName: user.displayName?.split(' ')[1] || '',
-      email: user.email,
-    });
-
-
-    router.push("/movies");
+    store.user = user;
+    router.push('/movies'); 
   } catch (error) {
-    alert(`Google Sign-Up Error: ${error.message}`);
+    alert(error.message);
   }
-}
+};
 </script>
-
-
-
 
 <template>
   <div class="hero">
@@ -100,7 +78,6 @@ async function registerByGoogle() {
 </template>
 
 <style scoped>
-
 .hero {
   background-color: black;
   height: 100vh;

@@ -1,79 +1,40 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, fetchSignInMethodsForEmail } from "firebase/auth";
-import { auth } from "../firebase";
-import { useUserStore } from '../stores';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useStore } from '../stores'; 
+import Header from '@/components/Header.vue';
 
 const email = ref('');
 const password = ref('');
-const userStore = useUserStore();
+const store = useStore(); 
 const router = useRouter();
 
-
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
-async function loginByEmail() {
+const loginByEmail = async () => {
   try {
-
-    const signInMethods = await fetchSignInMethodsForEmail(auth, email.value);
-    if (signInMethods.length === 0) {
-      alert("No account found with this email. Please register first.");
-      router.push("/register"); 
-      return;
-    }
-
-   
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    const user = userCredential.user;
-
-    userStore.setUserInfo({
-      firstName: user.displayName?.split(' ')[0] || '',
-      lastName: user.displayName?.split(' ')[1] || '',
-      email: user.email,
-    });
-
-    
-    router.push("/movies");
+    store.user = userCredential.user;
+    router.push('/movies'); 
   } catch (error) {
-    if (error.code === "auth/user-not-found") {
-     
-      await delay(1000); 
-      loginByEmail(); 
-    } else if (error.code === "auth/wrong-password") {
-      alert("Incorrect password. Please try again.");
-    } else {
-      alert(`Error: ${error.message}`);
-    }
+    alert(error.message);
   }
-}
+};
 
+const loginByGoogle = async () => {
+  const provider = new GoogleAuthProvider();
 
-async function loginByGoogle() {
   try {
-    const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-
-
-    userStore.setUserInfo({
-      firstName: user.displayName?.split(' ')[0] || '',
-      lastName: user.displayName?.split(' ')[1] || '',
-      email: user.email,
-    });
-
-   
-    router.push("/movies");
+    
+    store.user = user;
+    router.push('/movies'); 
   } catch (error) {
-    alert(`Google Sign-In Error: ${error.message}`);
+    alert(error.message);
   }
-}
+};
 </script>
-
-
 
 <template>
   <div class="hero">
@@ -96,11 +57,12 @@ async function loginByGoogle() {
     <div class="logo-container">
       <img :src="logo" width="160" height="160" alt="Black Logo" />
     </div>
+    <Header />
   </div>
+
 </template>
 
 <style scoped>
-
 .hero {
   background-color: black;
   height: 100vh;
