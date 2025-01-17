@@ -58,18 +58,6 @@ export const useStore = defineStore('store', () => {
     return true;
   }
 
-  onAuthStateChanged(auth, (firebaseUser) => {
-    if (firebaseUser) {
-      user.value = firebaseUser;
-      saveUserToLocalStorage();
-      loadCartFromLocalStorage();
-    } else {
-      user.value = null;
-      cart.value = new Map();
-      localStorage.removeItem('user');
-    }
-  });
-
   onMounted(() => {
     loadUserFromLocalStorage();
     loadCartFromLocalStorage();
@@ -92,3 +80,23 @@ export const useStore = defineStore('store', () => {
     loadCartFromLocalStorage,
   };
 });
+
+export const userAuthorized = new Promise((resolve, reject) => {
+  onAuthStateChanged(auth, user => {
+    const store = useStore();
+    try {
+      if (user) {
+        store.user = user;
+        saveUserToLocalStorage();
+        loadCartFromLocalStorage();
+      } else {
+        user.value = null;
+        cart.value = new Map();
+        localStorage.removeItem('user');
+      }
+      resolve();
+    } catch (error) {
+      reject();
+    }
+  })
+})

@@ -43,14 +43,14 @@ import { useStore } from '@/stores';
 
 const userStore = useStore(); 
 const genresList = [
-  { id: 35, genreName: 'Comedy' },
+  { id: 16, genreName: 'Animation' },
   { id: 12, genreName: 'Adventure' },
   { id: 28, genreName: 'Action' },
   { id: 80, genreName: 'Crime' },
-  { id: 14, genreName: 'Fantasy' },
+  { id: 10751, genreName: 'Family' },
 ];
 const movies = ref([]);
-const selectedGenre = ref(35);
+const selectedGenre = ref(16);
 const router = useRouter();
 
 async function getMovies() {
