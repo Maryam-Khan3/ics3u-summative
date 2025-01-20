@@ -7,7 +7,6 @@ import MoviesView from '../views/MoviesView.vue';
 import DetailView from '../views/DetailView.vue';
 import SettingsView from '@/views/SettingsView.vue';
 import CartView from '@/views/CartView.vue';
-import { userAuthorized } from '@/stores';
 
 const routes = [
   { path: '/register', component: RegisterView },
@@ -25,14 +24,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  userAuthorized.then(() => {
-    const store = useStore();
-    if (to.meta.requiresAuth && !store.user) {
-      next('/login');
-    } else {
-      next();
-    }
-  });
+  const store = useStore();
+  if (to.meta.requiresAuth && !store.user) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;

@@ -58,6 +58,7 @@ onMounted(() => {
   justify-content: flex-start;
   text-align: center;
   margin-top: 0; 
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .movie-title {
@@ -66,6 +67,7 @@ onMounted(() => {
   margin-top: 10px; 
   margin-bottom: 15px; 
   color: #f4f4f4; 
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .movie-overview {
@@ -74,6 +76,7 @@ onMounted(() => {
   line-height: 1.6; 
   color: white; 
   max-width: 700px; 
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 
 }
 

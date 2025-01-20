@@ -46,6 +46,8 @@ select {
   font-size: 1rem;
   width: 200px;
   transition: border-color 0.3s;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 select:focus {

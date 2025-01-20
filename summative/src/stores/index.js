@@ -1,6 +1,6 @@
-import { ref, watchEffect, onMounted } from "vue";
+import { ref, watch, onUnmounted } from "vue";
 import { defineStore } from "pinia";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, updateProfile, updatePassword } from "firebase/auth";
 import { auth } from "../firebase";
 
 export const useStore = defineStore('store', () => {
@@ -21,7 +21,6 @@ export const useStore = defineStore('store', () => {
       }
     }
   }
-
   function saveUserToLocalStorage() {
     if (user.value) {
       localStorage.setItem('user', JSON.stringify(user.value));
@@ -55,48 +54,75 @@ export const useStore = defineStore('store', () => {
 
     cart.value.clear();
     saveCartToLocalStorage();
-    return true;
+
+    return "Thank you for your purchase!";
+  }
+  async function updateUserProfile(firstName, lastName) {
+    if (user.value) {
+      try {
+        user.value.firstName = firstName;
+        user.value.lastName = lastName;
+        saveUserToLocalStorage();
+
+        const currentUser = auth.currentUser;
+
+        if (currentUser) {
+          await updateProfile(currentUser, {
+            displayName: `${firstName} ${lastName}`,
+          });
+        } else {
+          throw new Error("No current user found.");
+        }
+      } catch (error) {
+        console.error("Error updating user profile:", error.message);
+        throw new Error(`Failed to update profile: ${error.message}`);
+      }
+    } else {
+      throw new Error("No user logged in.");
+    }
   }
 
-  onMounted(() => {
-    loadUserFromLocalStorage();
-    loadCartFromLocalStorage();
-  });
+  async function updateUserPassword(newPassword) {
+    if (auth.currentUser) {
+      try {
+        await updatePassword(auth.currentUser, newPassword);
+      } catch (error) {
+        console.error("Error updating password:", error.message);
+        throw new Error(`Failed to update password: ${error.message}`);
+      }
+    } else {
+      throw new Error("No user logged in.");
+    }
+  }
 
-  watchEffect(() => {
-    if (user.value) {
+  loadUserFromLocalStorage();
+  loadCartFromLocalStorage();
+
+  const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      user.value = firebaseUser;
       saveUserToLocalStorage();
-      saveCartToLocalStorage();
+      loadCartFromLocalStorage();
+    } else {
+      user.value = null;
+      cart.value = new Map();
+      localStorage.removeItem('user');
     }
   });
+
+ 
+
+  watch(user, saveUserToLocalStorage);
 
   return {
     user,
     cart,
     addToCart,
     removeFromCart,
-    checkout, 
+    checkout,
+    updateUserProfile,
+    updateUserPassword,
     saveCartToLocalStorage,
     loadCartFromLocalStorage,
   };
 });
-
-export const userAuthorized = new Promise((resolve, reject) => {
-  onAuthStateChanged(auth, user => {
-    const store = useStore();
-    try {
-      if (user) {
-        store.user = user;
-        saveUserToLocalStorage();
-        loadCartFromLocalStorage();
-      } else {
-        user.value = null;
-        cart.value = new Map();
-        localStorage.removeItem('user');
-      }
-      resolve();
-    } catch (error) {
-      reject();
-    }
-  })
-})

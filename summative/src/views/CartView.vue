@@ -1,95 +1,124 @@
-<script setup>
-import { useStore } from '@/stores';
-const store = useStore();
-</script>
-
 <template>
-    <div class="cart">
-        <h1>Shopping Cart</h1>
-        <div class="item" v-for="([key, value]) in store.cart">
-            <img :src="`https://image.tmdb.org/t/p/w500${value.url}`" />
-            <h1>{{ value.title }}</h1>
-            <button @click="store.cart.delete(key)">Remove</button>
-        </div>
+  <div class="cart">
+    <div class="cart-items" v-if="store.cart.size > 0">
+      <div class="cart-item" v-for="([key, value], index) in store.cart" :key="index">
+        <img :src="`https://image.tmdb.org/t/p/w500${value.poster_path}`" class="movie-poster" alt="Movie Poster" />
+        <h1 class="cart-title">{{ value.title }}</h1>
+        <button class="remove-button" @click="handleRemoveFromCart(key)">Remove</button>
+      </div>
+      <button class="checkout-button" @click="handleCheckout">Checkout</button>
+    </div>
+
+    <p class="empty-cart" v-else>Your cart is empty.</p>
+
+    <p v-if="message" class="checkout-message">{{ message }}</p>
+  </div>
+
+  <div class="logo-container">
+      <img :src="logo" width="160" height="160" alt="Black Logo" />
     </div>
 </template>
 
+<script setup>
+import { useStore } from '@/stores';
+import { ref } from 'vue';
+import logo from '@/assets/blacklogo.jpg';
+const store = useStore();
+const message = ref("");
+
+function handleRemoveFromCart(movieId) {
+  store.removeFromCart(movieId);
+}
+
+function handleCheckout() {
+  const successMessage = store.checkout();
+  if (successMessage) {
+    message.value = successMessage;
+    setTimeout(() => {
+      message.value = ""; 
+    }, 3000);
+  }
+}
+</script>
+
 <style scoped>
-  body {
-    background-color: black;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 
-  .cart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    min-height: 100vh;
-    color: white;
-  }
+  /* Apply black background to the root element */
+  background-color: black;
+  min-height: 100vh; /* Ensures the background covers the full height of the viewport */
+}
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
+.cart-items {
+  width: 100%;
+  max-width: 800px;
+}
 
-  .cart-items {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 800px;
-  }
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #333;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
 
-  .cart-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #333;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
-  }
+.movie-poster {
+  width: 120px;
+  height: 180px;
+  border-radius: 8px;
+}
 
-  .cart-item:hover {
-    transform: scale(1.05);
-  }
+.cart-title {
+  flex-grow: 1;
+  margin-left: 15px;
+  color: white;
+}
 
-  .movie-poster {
-    width: 120px;
-    height: 180px;
-    border-radius: 8px;
-  }
+.remove-button,
+.checkout-button {
+  background-color: #571295;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .cart-title {
-    flex-grow: 1;
-    font-size: 1.2rem;
-    margin-left: 15px;
-    color: white;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.checkout-button {
+  margin-top: 20px;
+  padding: 12px 20px;
+}
 
-  .remove-button {
-    background-color: #571295;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-  }
+.remove-button:hover,
+.checkout-button:hover {
+  background-color: #7242d5;
+}
 
-  .remove-button:hover {
-    background-color: rgb(47, 56, 120);
-  }
+.empty-cart {
+  font-size: 3rem;
+  margin-top: 20px;
+  color: white;
+  text-align: center;
+}
 
-  .empty-cart {
-    font-size: 2.1rem;
-    color: black;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  }
+.checkout-message {
+  margin-top: 20px;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.logo-container {
+  position: absolute;
+  top: 4px;
+  left: 1100px;
+  z-index: 10;
+}
 </style>

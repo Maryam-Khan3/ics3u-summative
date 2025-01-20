@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useStore } from '../stores'; 
-import Header from '@/components/Header.vue';
+import logo from '@/assets/blacklogo.jpg';
+
 
 const email = ref('');
 const password = ref('');
@@ -57,7 +58,7 @@ const loginByGoogle = async () => {
     <div class="logo-container">
       <img :src="logo" width="160" height="160" alt="Black Logo" />
     </div>
-    <Header />
+    
   </div>
 
 </template>
@@ -102,11 +103,13 @@ const loginByGoogle = async () => {
   padding: 10px 20px;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s;
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  transition: background-color 0.3s, transform 0.2s; 
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.navbar .register:hover {
+  background-color: #7a1fdd; 
+  transform: scale(1.05); 
 }
 
 .form-container {
@@ -115,11 +118,17 @@ const loginByGoogle = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 30px;
   background-color: rgb(0, 0, 0);
   border-radius: 10px;
   width: 300px;
   margin-top: 50px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
 }
 
 .input-field {
@@ -145,9 +154,34 @@ const loginByGoogle = async () => {
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s; 
   width: 100%;
   margin-top: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
+.login:hover,
+.google-login:hover {
+  background-color: #7a1fdd; 
+  transform: scale(1.05); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.google-login {
+  background-color: #571295;
+  margin-top: 15px;
+}
+
+.google-login:hover {
+  background-color: #7a1fdd; 
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.logo-container {
+  position: absolute;
+  top: 4px;
+  left: 1100px;
+  z-index: 10;
+}
+
 </style>

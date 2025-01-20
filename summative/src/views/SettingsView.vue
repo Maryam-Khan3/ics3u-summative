@@ -2,7 +2,7 @@
   <div class="settings-container">
     <h1>Settings</h1>
 
-    <form @submit="handleSubmit" class="form">
+    <form @submit.prevent="handleSubmit" class="form">
       <div class="form-group">
         <label for="firstName">First Name:</label>
         <input
@@ -47,17 +47,19 @@
         />
       </div>
 
-
       <button type="submit" class="button save" :disabled="isGoogleUser">Save Changes</button>
     </form>
   </div>
+  <div class="logo-container">
+      <img :src="logo" width="160" height="160" alt="Black Logo" />
+    </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from '@/stores'; 
-
-const store = useStore(); 
+import logo from '@/assets/blacklogo.jpg';
+const store = useStore();
 
 const firstName = ref('');
 const lastName = ref('');
@@ -76,33 +78,40 @@ onMounted(() => {
   }
 });
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
+const handleSubmit = async () => {
   if (!isGoogleUser.value) {
-    if (password.value) {
-      try {
+    try {
+      if (password.value) {
         await store.updateUserPassword(password.value);
         alert('Password updated successfully!');
-      } catch (error) {
-        console.error('Failed to update password:', error);
-        alert('Failed to update password.');
       }
+
+      await store.updateUserProfile(firstName.value, lastName.value);
+
+      alert('Settings updated!');
+    } catch (error) {
+      console.error('Failed to update user settings:', error);
+      alert('Failed to update user settings. Please try again.');
     }
-
-    await store.updateUserProfile(firstName.value, lastName.value);
-
-    alert('Settings updated!');
   } else {
     alert('You cannot edit your details as you signed in with Google.');
   }
 };
+
+onMounted(() => {
+
+  if (store.user) {
+    firstName.value = store.user.firstName || '';
+    lastName.value = store.user.lastName || '';
+    email.value = store.user.email || '';
+  }
+});
+
 </script>
 
-
 <style scoped>
-body {
+html, body {
+  height: 100%;
   background-color: black;
   color: white;
   margin: 0;
@@ -110,20 +119,26 @@ body {
 }
 
 .settings-container {
+  background-color: black;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   flex-direction: column;
   padding: 20px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
+
 h1 {
-  color: black;
+  color: white; /* Visible against black background */
   font-size: 2rem;
   margin-bottom: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
 
 .form {
   width: 100%;
@@ -147,6 +162,7 @@ h1 {
   background-color: #333;
   color: white;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 button.save {
@@ -159,14 +175,23 @@ button.save {
   width: 100%;
   margin-top: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 button.save:hover {
-  background-color: #5e1eaf;
+  background-color: #7a1fdd;
+  
 }
 
 label {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: white;
 }
+.logo-container {
+  position: absolute;
+  top: 4px;
+  left: 1100px;
+  z-index: 10;
+}
+
+
 </style>

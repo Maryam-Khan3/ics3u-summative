@@ -68,6 +68,7 @@ function goToCart() {
   display: flex;
   justify-content: flex-start;
   padding: 0 20px;
+  
 }
 
 .nav-buttons .button {
@@ -87,6 +88,7 @@ function goToCart() {
   justify-content: center;
   gap: 20px;
   margin-top: 20px;
+  
 }
 
 .button {
@@ -101,6 +103,8 @@ function goToCart() {
 }
 
 .button:hover {
-  background-color: rgb(65, 23, 94);
+  background-color: #7a1fdd;
+  transform: scale(1.05); /* Optional: Add a slight scaling effect */
+  transition: background-color 0.3s, transform 0.2s;
 }
 </style>

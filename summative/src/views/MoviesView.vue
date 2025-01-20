@@ -110,7 +110,9 @@ body{
 }
 
 .buy-button:hover {
-  background-color: #6a1b9a; 
+  background-color: #7a1fdd; 
+  transform: scale(1.05); /* Optional: Add a slight scaling effect */
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .movie-list {

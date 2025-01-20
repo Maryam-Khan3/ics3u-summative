@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useStore } from '../stores'; 
+import logo from '@/assets/blacklogo.jpg';
 
 const firstName = ref('');
 const lastName = ref('');
@@ -98,6 +99,7 @@ const registerByGoogle = async () => {
   justify-content: center;
   color: white;
   padding: 20px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .navbar {
@@ -119,6 +121,7 @@ const registerByGoogle = async () => {
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .form-container {
@@ -127,7 +130,7 @@ const registerByGoogle = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 10px 20px; 
   background-color: rgb(0, 0, 0);
   border-radius: 10px;
   width: 300px;
@@ -135,17 +138,18 @@ const registerByGoogle = async () => {
 }
 
 .form-container h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: 1.8rem; 
+  margin-bottom: 10px; 
 }
 
 .input-field {
-  padding: 15px;
+  padding: 10px; 
   width: 100%;
   border-radius: 5px;
   border: 1px solid #ccc;
-  margin-bottom: 15px;
+  margin-bottom: 10px; 
   transition: border-color 0.3s;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .register,
@@ -159,6 +163,21 @@ const registerByGoogle = async () => {
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 15px; 
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.navbar .login:hover,
+.register:hover,
+.google-register:hover {
+  background-color: #7a1fdd; /* Change to a slightly darker shade */
+  transform: scale(1.05); /* Optional: Add a slight scaling effect */
+  transition: background-color 0.3s, transform 0.2s;
+}
+.logo-container {
+  position: absolute;
+  top: 4px;
+  left: 1100px;
+  z-index: 10;
 }
 </style>
