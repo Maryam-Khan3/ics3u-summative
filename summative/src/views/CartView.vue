@@ -8,12 +8,9 @@
       </div>
       <button class="checkout-button" @click="handleCheckout">Checkout</button>
     </div>
-
     <p class="empty-cart" v-else>Your cart is empty.</p>
-
     <p v-if="message" class="checkout-message">{{ message }}</p>
   </div>
-
   <div class="logo-container">
       <img :src="logo" width="160" height="160" alt="Black Logo" />
     </div>
@@ -49,10 +46,8 @@ function handleCheckout() {
   padding: 20px;
   color: white;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
-  /* Apply black background to the root element */
   background-color: black;
-  min-height: 100vh; /* Ensures the background covers the full height of the viewport */
+  min-height: 100vh; 
 }
 
 .cart-items {

@@ -104,7 +104,7 @@ function goToCart() {
 
 .button:hover {
   background-color: #7a1fdd;
-  transform: scale(1.05); /* Optional: Add a slight scaling effect */
+  transform: scale(1.05); 
   transition: background-color 0.3s, transform 0.2s;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div class="settings-container">
     <h1>Settings</h1>
-
     <form @submit.prevent="handleSubmit" class="form">
       <div class="form-group">
         <label for="firstName">First Name:</label>
@@ -13,7 +12,6 @@
           :disabled="isGoogleUser" 
         />
       </div>
-
       <div class="form-group">
         <label for="lastName">Last Name:</label>
         <input
@@ -24,7 +22,6 @@
           :disabled="isGoogleUser" 
         />
       </div>
-
       <div class="form-group">
         <label for="email">Email:</label>
         <input
@@ -35,7 +32,6 @@
           disabled 
         />
       </div>
-
       <div class="form-group" v-if="!isGoogleUser">
         <label for="password">Password:</label>
         <input
@@ -46,7 +42,6 @@
           placeholder="Enter new password"
         />
       </div>
-
       <button type="submit" class="button save" :disabled="isGoogleUser">Save Changes</button>
     </form>
   </div>
@@ -59,8 +54,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from '@/stores'; 
 import logo from '@/assets/blacklogo.jpg';
-const store = useStore();
 
+const store = useStore();
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
@@ -131,14 +126,12 @@ html, body {
 
 }
 
-
 h1 {
-  color: white; /* Visible against black background */
+  color: white; 
   font-size: 2rem;
   margin-bottom: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-
 
 .form {
   width: 100%;
@@ -162,7 +155,6 @@ h1 {
   background-color: #333;
   color: white;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 button.save {
@@ -175,23 +167,20 @@ button.save {
   width: 100%;
   margin-top: 20px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
 }
 
 button.save:hover {
   background-color: #7a1fdd;
-  
 }
 
 label {
   color: white;
 }
+
 .logo-container {
   position: absolute;
   top: 4px;
   left: 1100px;
   z-index: 10;
 }
-
-
 </style>

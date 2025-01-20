@@ -170,8 +170,8 @@ const registerByGoogle = async () => {
 .navbar .login:hover,
 .register:hover,
 .google-register:hover {
-  background-color: #7a1fdd; /* Change to a slightly darker shade */
-  transform: scale(1.05); /* Optional: Add a slight scaling effect */
+  background-color: #7a1fdd; 
+  transform: scale(1.05); 
   transition: background-color 0.3s, transform 0.2s;
 }
 .logo-container {

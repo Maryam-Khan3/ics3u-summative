@@ -6,7 +6,6 @@ import { auth } from '../firebase';
 import { useStore } from '../stores'; 
 import logo from '@/assets/blacklogo.jpg';
 
-
 const email = ref('');
 const password = ref('');
 const store = useStore(); 
@@ -58,9 +57,7 @@ const loginByGoogle = async () => {
     <div class="logo-container">
       <img :src="logo" width="160" height="160" alt="Black Logo" />
     </div>
-    
   </div>
-
 </template>
 
 <style scoped>
